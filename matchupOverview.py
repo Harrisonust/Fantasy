@@ -4,8 +4,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
-import numpy as np
-import pandas as pd
+# import numpy as np
+# import pandas as pd
 from bs4 import BeautifulSoup
 import selenium
 import getpass
@@ -239,7 +239,7 @@ def login():
     password = getpass.getpass()
     week = input("Week: ")
 
-    Chrome_driver_path = './chromedriver-1'
+    Chrome_driver_path = './chromedriver'
     web = 'https://login.yahoo.com/config/login?.src=fantasy&specId=usernameRegWithName&.intl=us&.lang=en-US&.done=https://basketball.fantasysports.yahoo.com/'  # Yahoo Fantasy登入頁面
     chrome_options = webdriver.ChromeOptions()
     # 建議可以點選F12看request header的項目
