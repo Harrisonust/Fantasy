@@ -8,7 +8,13 @@ from selenium import webdriver
 # import pandas as pd
 from bs4 import BeautifulSoup
 import selenium
-import getpass
+# import getpass
+# from kivy.app import App
+# from kivy.uix.button import Button
+# from kivy.uix.label import Label
+# from kivy.uix.gridlayout import GridLayout
+# from kivy.uix.textinput import TextInput
+# from kivy.uix.boxlayout import BoxLayout
 
 
 class Team:
@@ -234,21 +240,8 @@ def printOverview(teams):
     print("TO:\t{0:.3f}({1:d})".format(avgStats[8], selectedTeam.TO))
 
 
-def login():
-    username = input("Username: ")
-    password = getpass.getpass()
-    week = input("Week: ")
+def login(username, password):
 
-    Chrome_driver_path = './chromedriver'
-    web = 'https://login.yahoo.com/config/login?.src=fantasy&specId=usernameRegWithName&.intl=us&.lang=en-US&.done=https://basketball.fantasysports.yahoo.com/'  # Yahoo Fantasy登入頁面
-    chrome_options = webdriver.ChromeOptions()
-    # 建議可以點選F12看request header的項目
-    chrome_options.add_argument(
-        'User-Agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36"')
-    # chrome_options.add_argument('--headless')
-
-    driver = webdriver.Chrome(executable_path=Chrome_driver_path,
-                              chrome_options=chrome_options)
     # driver.maximize_window()  # 最大化視窗，因為我發現某些情況下，較小的視窗會導致往下移動的JS沒有辦法執行。
 
     driver.get(web)  # 開始進入登入頁面
@@ -265,10 +258,9 @@ def login():
     elem_signin = driver.find_element_by_id('login-signin')  # 找到確認按鈕
     elem_signin.click()  # 點擊確認
     time.sleep(15)
-    return driver, week
 
 
-def getMatch(driver, week):
+def getMatch(week):
     web2 = 'https://basketball.fantasysports.yahoo.com/nba/43003/matchup?week=' + week
     driver.get(web2)
 
@@ -316,13 +308,65 @@ def getLink(pages):
     return target_pages2
 
 
+# class MyGrid(GridLayout):
+#     def __init__(self, **kwargs):
+#         super(MyGrid, self).__init__(**kwargs)
+
+#         self.inside = GridLayout()
+#         self.inside.cols = 2
+
+#         self.cols = 1
+#         self.inside.add_widget(Label(text="Username: "))
+#         self.Username = TextInput(multiline=False)
+#         self.inside.add_widget(self.Username)
+
+#         self.inside.add_widget(Label(text="Password: "))
+#         self.Password = TextInput(multiline=False)
+#         self.inside.add_widget(self.Password)
+
+#         self.inside.add_widget(Label(text="Week: "))
+#         self.Week = TextInput(multiline=False)
+#         self.inside.add_widget(self.Week)
+
+#         self.submit = Button(text="Submit", font_size=40)
+#         self.submit.bind(on_press=self.press)
+
+#         self.add_widget(self.inside)
+#         self.add_widget(self.submit)
+#         # self.add_widget(self.logger)
+
+#     def press(self, instance):
+#         name = self.Username.text
+#         password = self.Password.text
+#         week = self.Week.text
+#         login(name, password)
+#         App.get_running_app().stop()
+
+
+# class AnalyserApp(App):
+#     def build(self):
+#         return MyGrid()
+
+
 leagueSize = 14
+Chrome_driver_path = './chromedriver'
+web = 'https://login.yahoo.com/config/login?.src=fantasy&specId=usernameRegWithName&.intl=us&.lang=en-US&.done=https://basketball.fantasysports.yahoo.com/'  # Yahoo Fantasy登入頁面
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument(
+    'User-Agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36"')
+driver = webdriver.Chrome(executable_path=Chrome_driver_path,
+                          chrome_options=chrome_options)
+soup = BeautifulSoup(driver.page_source, "html.parser")
+pages = soup.find_all('div', class_='Ta-c Js-hidden')  # 找網址
+names = soup.find_all('a', class_='F-link')  # 找隊名
 
 
 def main():
-
-    driver, week = login()
-    soup, pages, names = getMatch(driver, week)
+    name = input('Username: ')
+    password = input('Password: ')
+    week = input('Week: ')
+    login(name, password)
+    soup, pages, names = getMatch(week)
 
     # preprocess names
     names2 = []
