@@ -264,7 +264,7 @@ def login():
     elem_pass.send_keys(password)  # 填入密碼
     elem_signin = driver.find_element_by_id('login-signin')  # 找到確認按鈕
     elem_signin.click()  # 點擊確認
-    time.sleep(1)
+    time.sleep(15)
     return driver, week
 
 
